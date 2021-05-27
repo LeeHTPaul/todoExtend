@@ -10,6 +10,7 @@ import {
 export default function AddScreen({ navigation }) {
   const [text, setText] = useState("");
 console.log("add screen");
+  let textE = "Add";
   return (
     <View style={[styles.container, { backgroundColor: "white" }]}>
       <Text style={{ fontSize: 24 }}>Add your todo here</Text>
@@ -21,7 +22,7 @@ console.log("add screen");
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("Notes", { text })}
+          onPress={() => navigation.navigate("Notes", { text, textE })}
         >
           <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>

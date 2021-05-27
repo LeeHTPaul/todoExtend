@@ -7,23 +7,26 @@ import {
   TextInput,
 } from "react-native";
 
+
 export default function UpdateScreen({ navigation, route }) {
     const [text, setText] =  useState(route.params.item.title);
-    //text = setText(route.params.title);
+    let textE = route.params.item.title;
     const id = route.params.item.id;
-    console.log("add screen");
+    console.log("update screen", textE);
   return (
     <View style={[styles.container, { backgroundColor: "white" }]}>
       <Text style={{ fontSize: 24 }}>Update your todo here</Text>
       <TextInput
         style={styles.textInput}
         value={text}
-        onChangeText={(input) => setText(input)}
+        onChangeText={(input) => setText(input)} 
       />
       <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={styles.button}
-          onPress={() => navigation.navigate("Notes", { text, id })}
+          onPress={() => 
+            navigation.navigate("Notes", { text, id, textE })
+            }
         >
           <Text style={styles.buttonText}>Save</Text>
         </TouchableOpacity>

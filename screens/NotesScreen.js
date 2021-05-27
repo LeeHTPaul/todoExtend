@@ -17,21 +17,22 @@ export default function NotesScreen({ navigation, route }) {
   // the snapshot keeps everything synched - no need to refresh it later 
   // onSnapshot() is a listener
 
- // above
 useEffect(() => {
-  const unsubscribe = db.orderBy("created").onSnapshot((collection) => {
+  const unsubscribe = db.orderBy("created","desc").onSnapshot((collection) => {
     const updatedNotes = collection.docs.map((doc) => {
     // create our own object that pulls the id into a property
     const noteObject = {
       ...doc.data(),
       id: doc.id,
     };
-    console.log(noteObject);
+    //console.log("noteobject", noteObject); loop thru the collection
     return noteObject;
   });
+  //console.log("setNotes");
   setNotes(updatedNotes);
-});
-return unsubscribe; //return the cleanup function
+  });
+//console.log("return unsubscribe"); // run after thread close
+  return unsubscribe; //return the cleanup function
 }, []);
 //*/
 /*
@@ -74,18 +75,35 @@ return unsubscribe; //return the cleanup function
         created: firebase.firestore.FieldValue.serverTimestamp(),
         //id: notes.length.toString(), -- no more id line
       };
-      db.add(newNote);
+      // different text and existing text - to consider to add
+      // if textE Add - meaning new todo - to add if not dont add
+
+      //replace by textE=== Add below start
+      //if (route.params.text !== route.params.textE) {
+      //   route.params?.textE ? console.log("do nothing") : db.add(newNote);
+      //   console.log("inside.. ", route.params.textE);
+      //} else console.log("outside");
+      // replace by textE === Add .... end 
+      if (route.params.textE === "Add") db.add(newNote);
+      //if (addInd) {
+      //    db.add(newNote);
+      //    addInd = false; 
+      //}
+      //db.add(newNote);
       //firebase.firestore().collection("todos").add(newNote);
       // setNotes([...notes, newNote]); this line can be deleted
     }
   }, [route.params?.text]);
 
-  // update delete text below
-  console.log("update (add then delete) check...", route)
+  // update only ..  text below ?id meaning any change in id
+  //console.log("update check. route==", route)
   useEffect(() => {
     if (route.params?.id) {
-      console.log("From Update -deleting.. ", route.params.id);
-      db.doc(route.params.id).delete();
+      if (route.params.text !== route.params.textE) {
+        console.log("From Update -updating. ", route.params.id);
+      //db.doc(route.params.id).delete();
+        db.doc(route.params.id).update({title : route.params.text});
+      }
     }
   }, [route.params?.id]);
   // update text end
@@ -95,7 +113,7 @@ return unsubscribe; //return the cleanup function
   }
 
   function doneNote(id){
-    db.doc(id).update({done : 1});
+    db.doc(id).update({done : true});
   }
   // This deletes an individual note
   function deleteNote(id) {
